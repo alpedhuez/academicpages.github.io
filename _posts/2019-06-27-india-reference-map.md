@@ -3,7 +3,7 @@ layout: article
 title:  "Map of India"
 ---
 
-['Map of India'](/assets/images/india-ref.png)
+<img src="/assets/images/india-ref.png"/>
 
 A reference map of India, made using QGIS and [Natural Earth](http://naturalearthdata.com/) data. 
 
