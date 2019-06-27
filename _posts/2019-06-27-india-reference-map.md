@@ -3,7 +3,7 @@ layout: post
 title:  "Map of India"
 ---
 
-['Map of India'](/images/posts/india-ref.png)
+['Map of India'](/assets/images/india-ref.png)
 
 A reference map of India, made using QGIS and [Natural Earth](http://naturalearthdata.com/) data. 
 
