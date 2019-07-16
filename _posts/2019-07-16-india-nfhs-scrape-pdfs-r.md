@@ -3,7 +3,7 @@ layout: article
 title:  "[R] Scraping Indian health survey data from PDFs"
 ---
 # Aim 
-I want to be able to create a map of district-level child malnutrition data for India. This data is available online at the National Family Health Survey website, but unfortunately the data is only available in PDF form and the website is often offline. It would be useful to have the data in table format and stored locally so that it can be used in GIS software. 
+I want to be able to create a map of district-level child malnutrition data for India. This data is available online at the [National Family Health Survey website](http://rchiips.org/nfhs/index.shtml), but unfortunately the data is only available in PDF form and the website is often offline. It would be useful to have the data in table format and stored locally so that it can be used in GIS software. 
 
 If there were just a handful of data sheets to get data from, it would be easier to just copy the data by hand into a spreadsheet or add directly into GIS software. However, India has 33 states and over 600 districts, so clearly it would take too long to download each PDF and then copy out the data - I needed to find a way to automate this process. 
 
@@ -51,7 +51,7 @@ for (i in state_urls){
   district_pdfs[[i]] <- read_html(i) %>% html_nodes('option') %>% html_attr('value')
 }
 ```
-Now that I have a URL for every PDF, I can loop through and download them. To keep things tidy, I extracted the two-letter state code from the URL and made a folder using the code that I can save the PDFs for that state into. [^2][^3] When I first tried this the PDFs downloaded as blank files. Adding the `mode="wb"` flag to `download.file` fixed this.[^4]
+Now that I have a URL for every PDF, I can loop through and download them. To keep things tidy, I extracted the two-letter state code from the URL and made a folder using the code that I can save the PDFs for that state into. [^2] [^3] When I first tried this the PDFs downloaded as blank files. Adding the `mode="wb"` flag to `download.file` fixed this. [^4]
 
 ```r
 ifelse(!dir.exists("data"), dir.create("data")) # check if data directory exists, if not create it. 
@@ -68,9 +68,9 @@ for (i in district_pdfs){ #do any filtering of states here - it can take a long 
 ```
 ## Extract data from PDFs
 
-Now that I have the PDFs, the next step is to extract the data from them. As with scraping, I found a number of methods for reading table data from PDFs in R. The package I found most straighforward was `tabulizer`.[^5]
+Now that I have the PDFs, the next step is to extract the data from them. As with scraping, I found a number of methods for reading table data from PDFs in R. The package I found most straighforward was `tabulizer`. [^5]
 
-Now I can loop through each directory and process each PDF.[^6] Luckily, each PDF is in the same format and the data I want is on the same page in all of the files. Therefore I can set the page to extract to cut down on processing time and avoid some extra steps of searching and extracting the right pages. 
+Now I can loop through each directory and process each PDF. [^6] Luckily, each PDF is in the same format and the data I want is on the same page in all of the files. Therefore I can set the page to extract to cut down on processing time and avoid some extra steps of searching and extracting the right pages. 
 
 First, I extract the data from page 4 of the PDF and convert it to a data.frame.
 
@@ -82,7 +82,7 @@ for (f in files){
   df_results <- extract_tables(f, pages = 4)
   df2 <- data.frame(df_results)
 ```
-Then I do some tidying: fix the column names and remove some unneeded rows at the top.[^7] 
+Then I do some tidying: fix the column names and remove some unneeded rows at the top. [^7] 
 ```r
   x1 <- df_results[[1]][1,1]
   x2 <- df_results[[1]][2,2]
@@ -90,7 +90,7 @@ Then I do some tidying: fix the column names and remove some unneeded rows at th
   df2 <- df2[-1,]
   df2 <- df2[-1,]
 ```
-The data.frame is still a bit messy, but rather than spending lots of time tidying up formatting for rows I don't need to use, I decided to just extract the rows with the data I need. The questions relating to child malnutrition rates are nos. 68-71. As the question numbers are included in column 1, I can run a text search for those numbers and pull them out into a new variable `q67_71`.[^9] 
+The data.frame is still a bit messy, but rather than spending lots of time tidying up formatting for rows I don't need to use, I decided to just extract the rows with the data I need. The questions relating to child malnutrition rates are nos. 68-71. As the question numbers are included in column 1, I can run a text search for those numbers and pull them out into a new variable `q67_71`. [^9] 
 
 ```r
   q68_71 <- df2 %>% filter(str_detect(Indicators, "68.")|str_detect(Indicators, "69.")|str_detect(Indicators, "70.")|str_detect(Indicators, "71."))
@@ -240,19 +240,12 @@ for (f in files){
   ```
   
 # Footnotes
-[^1]:  [Tidyverse: rvest]( https://github.com/tidyverse/rvest )
-[Stack Overflow: Scrape and loop with Rvest](https://stackoverflow.com/questions/53679009/scrape-and-loop-with-rvest)
-[Stack Overflow: How to read an HTML list from a webpage into R](https://stackoverflow.com/questions/42259300/how-to-read-an-html-list-from-a-webpage-into-r)
-[^2]:  [Function of the day: dir.create](http://rfunction.com/archives/2432)
- [Master Data Analysis: Working with files and folders in R](https://www.masterdataanalysis.com/r/working-with-files-and-folders-in-r/)
-[^3]:  [Stack Overflow: How to index an element of a list object in R](https://stackoverflow.com/questions/21091202/how-to-index-an-element-of-a-list-object-in-r)
-[Stack Overflow: How can two strings be concatenated?](https://stackoverflow.com/questions/7201341/how-can-two-strings-be-concatenated)
-[Stack Overflow: How to remove last n characters from every element in the R vector](https://stackoverflow.com/questions/23413331/how-to-remove-last-n-characters-from-every-element-in-the-r-vector)
+[^1]:  [Tidyverse: rvest]( https://github.com/tidyverse/rvest) //  [Stack Overflow: Scrape and loop with Rvest](https://stackoverflow.com/questions/53679009/scrape-and-loop-with-rvest) // [Stack Overflow: How to read an HTML list from a webpage into R](https://stackoverflow.com/questions/42259300/how-to-read-an-html-list-from-a-webpage-into-r)
+[^2]:  [Function of the day: dir.create](http://rfunction.com/archives/2432),  [Master Data Analysis: Working with files and folders in R](https://www.masterdataanalysis.com/r/working-with-files-and-folders-in-r/)
+[^3]:  [Stack Overflow: How to index an element of a list object in R](https://stackoverflow.com/questions/21091202/how-to-index-an-element-of-a-list-object-in-r) // [Stack Overflow: How can two strings be concatenated?](https://stackoverflow.com/questions/7201341/how-can-two-strings-be-concatenated) // [Stack Overflow: How to remove last n characters from every element in the R vector](https://stackoverflow.com/questions/23413331/how-to-remove-last-n-characters-from-every-element-in-the-r-vector)
 [^4]:  [Stack Overflow: Problems with Downloading pdf file using R](https://stackoverflow.com/questions/9280243/problems-with-downloading-pdf-file-using-r)
-[^5]:  [tabulizer: Extract Tables from PDFs]( https://cran.r-project.org/web/packages/tabulizer/readme/README.html)
-[ROpenSci: Tabulizer tutorial]( https://ropensci.org/tutorials/tabulizer_tutorial/)
+[^5]:  [tabulizer: Extract Tables from PDFs]( https://cran.r-project.org/web/packages/tabulizer/readme/README.html) // [Introduction to tabulizer](https://cran.r-project.org/web/packages/tabulizer/vignettes/tabulizer.html) // [ROpenSci: Tabulizer tutorial]( https://ropensci.org/tutorials/tabulizer_tutorial/)
 [^6]:  [Stack Overflow: How to loop over files in different directories](https://stackoverflow.com/questions/18751361/how-to-loop-over-files-in-different-directories)
 [^7]:  [Stack Overflow: Assign headers based on existing row in dataframe in R](https://stackoverflow.com/questions/20956119/assign-headers-based-on-existing-row-in-dataframe-in-r)
 [^8]:  [Tidyverse: Write a data frame to a delimited file](https://readr.tidyverse.org/reference/write_delim.html)
-[^9]:  [Sebastian Sauer: Some tricks on dplyr::filter](https://sebastiansauer.github.io/dplyr_filter/)
-[Stack OVerflow: Filtering row which contains a certain string using dplyr](https://stackoverflow.com/questions/22850026/filtering-row-which-contains-a-certain-string-using-dplyr)
+[^9]:  [Sebastian Sauer: Some tricks on dplyr::filter](https://sebastiansauer.github.io/dplyr_filter/) // [Stack OVerflow: Filtering row which contains a certain string using dplyr](https://stackoverflow.com/questions/22850026/filtering-row-which-contains-a-certain-string-using-dplyr)
