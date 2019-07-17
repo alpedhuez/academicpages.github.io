@@ -216,25 +216,25 @@ for (f in files){
   q68_71 <- df2 %>% filter(str_detect(Indicators, "68.")|str_detect(Indicators, "69.")|str_detect(Indicators, "70.")|str_detect(Indicators, "71."))
   
     # if cols are rural and total, set flag 
-  if (colnames(df2)[2] == "Rural Total") {RT <-  TRUE} else {RT <- FALSE}
+  if (colnames(q68_71)[2] == "Rural Total") {RT <-  TRUE} else {RT <- FALSE}
   
   # if cols are urban and total, set flag 
-  if (colnames(df2)[2] == "Urban Total") {UT <- TRUE} else {UT <- FALSE}
+  if (colnames(q68_71)[2] == "Urban Total") {UT <- TRUE} else {UT <- FALSE}
   
   # if cols are urban, rural and total, set flag 
   if (colnames(q68_71)[2] == "Urban Rural Total") {URT <- TRUE} else {URT <- FALSE}
 
   # split columns and rename depending on flag  
   if (RT == TRUE){
-    df2["Rural"] <- str_split_fixed(df2$`Rural Total`, " ", 2)[,1] # insert split column into data.frame
-    df2["Total"] <- str_split_fixed(df2$`Rural Total`, " ", 2)[,2]
-    df2["Rural Total"] <- NULL    # remove original column 
+    q68_71["Rural"] <- str_split_fixed(q68_71$`Rural Total`, " ", 2)[,1] # insert split column into data.frame
+    q68_71["Total"] <- str_split_fixed(q68_71$`Rural Total`, " ", 2)[,2]
+    q68_71["Rural Total"] <- NULL    # remove original column 
     RT <- FALSE                   # reset the flag 
   }
   if (UT == TRUE){
-    df2["Urban"] <- str_split_fixed(df2$`Urban Total`, " ", 2)[,1]
-    df2["Total"] <- str_split_fixed(df2$`Urban Total`, " ", 2)[,2]
-    df2["Urban Total"] <- NULL 
+    q68_71["Urban"] <- str_split_fixed(q68_71$`Urban Total`, " ", 2)[,1]
+    q68_71["Total"] <- str_split_fixed(q68_71$`Urban Total`, " ", 2)[,2]
+    q68_71["Urban Total"] <- NULL 
     UT <- FALSE
   }
   if (URT == TRUE){
